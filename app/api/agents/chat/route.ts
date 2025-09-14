@@ -277,7 +277,7 @@ export async function POST(request: NextRequest) {
     }
 
     const data = parseResult.data
-    const aiResponse = data.choices[0]?.message?.content || 'I apologize, but I encountered an error processing your request.'
+    const aiResponse = data?.choices?.[0]?.message?.content || 'I apologize, but I encountered an error processing your request.'
 
     return NextResponse.json({
       response: aiResponse,
