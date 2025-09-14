@@ -24,7 +24,7 @@ export async function GET(
     const fileBuffer = await readFile(filePath)
     
     // Set appropriate headers for DOCX files
-    return new NextResponse(fileBuffer, {
+    return new NextResponse(new Uint8Array(fileBuffer), {
       headers: {
         'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         'Content-Disposition': `attachment; filename="${fullFilename}"`,

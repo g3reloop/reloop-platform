@@ -105,7 +105,7 @@ export function CarrierDirectory() {
             <div>
               <Label htmlFor="capability">Capability</Label>
               <Select value={filterCapability} onValueChange={setFilterCapability}>
-                <SelectTrigger id="capability">
+                <SelectTrigger>
                   <SelectValue placeholder="All capabilities" />
                 </SelectTrigger>
                 <SelectContent>
@@ -122,7 +122,7 @@ export function CarrierDirectory() {
             <div>
               <Label htmlFor="area">Service area</Label>
               <Select value={filterArea} onValueChange={setFilterArea}>
-                <SelectTrigger id="area">
+                <SelectTrigger>
                   <SelectValue placeholder="All areas" />
                 </SelectTrigger>
                 <SelectContent>
@@ -139,7 +139,7 @@ export function CarrierDirectory() {
             <div>
               <Label htmlFor="specialty">Material specialty</Label>
               <Select value={filterSpecialty} onValueChange={setFilterSpecialty}>
-                <SelectTrigger id="specialty">
+                <SelectTrigger>
                   <SelectValue placeholder="All materials" />
                 </SelectTrigger>
                 <SelectContent>

@@ -1,7 +1,8 @@
 'use client'
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { LoopBadge, GirmBadge, DaoBadge } from '@/components/ui/badges'
+import { LoopBadge } from '@/components/ui/loop-badge'
+import { GirmBadge, DaoBadge } from '@/components/ui/badges'
 
 export default function BadgeShowcasePage() {
   return (
@@ -57,25 +58,25 @@ export default function BadgeShowcasePage() {
             <div>
               <h4 className="text-sm font-medium mb-2 text-gray-400">Statuses</h4>
               <div className="flex items-center gap-3 flex-wrap">
-                <GirmBadge status="verified" />
-                <GirmBadge status="anchored" />
-                <GirmBadge status="pending" />
-                <GirmBadge status="failed" />
+                <GirmBadge proofId="ABC123" />
+                <GirmBadge proofId="DEF456" />
+                <GirmBadge proofId="pending" />
+                <GirmBadge />
               </div>
             </div>
             <div>
               <h4 className="text-sm font-medium mb-2 text-gray-400">Sizes</h4>
               <div className="flex items-center gap-3">
-                <GirmBadge status="verified" size="sm" />
-                <GirmBadge status="verified" size="md" />
-                <GirmBadge status="verified" size="lg" />
+                <GirmBadge proofId="ABC123" />
+                <GirmBadge proofId="DEF456" />
+                <GirmBadge proofId="GHI789" />
               </div>
             </div>
             <div>
               <h4 className="text-sm font-medium mb-2 text-gray-400">Without Icons</h4>
               <div className="flex items-center gap-3">
-                <GirmBadge status="verified" showIcon={false} />
-                <GirmBadge status="anchored" showIcon={false} />
+                <GirmBadge proofId="ABC123" />
+                <GirmBadge proofId="DEF456" />
               </div>
             </div>
           </CardContent>
@@ -93,17 +94,17 @@ export default function BadgeShowcasePage() {
             <div>
               <h4 className="text-sm font-medium mb-2 text-gray-400">Statuses</h4>
               <div className="flex items-center gap-3">
-                <DaoBadge status="signed" />
-                <DaoBadge status="voting" />
-                <DaoBadge status="member" />
+                <DaoBadge />
+                <DaoBadge />
+                <DaoBadge />
               </div>
             </div>
             <div>
               <h4 className="text-sm font-medium mb-2 text-gray-400">Sizes</h4>
               <div className="flex items-center gap-3">
-                <DaoBadge status="signed" size="sm" />
-                <DaoBadge status="signed" size="md" />
-                <DaoBadge status="signed" size="lg" />
+                <DaoBadge />
+                <DaoBadge />
+                <DaoBadge />
               </div>
             </div>
           </CardContent>
@@ -126,7 +127,7 @@ export default function BadgeShowcasePage() {
                 </div>
                 <div className="flex items-center gap-2">
                   <LoopBadge type="SRL" />
-                  <GirmBadge status="anchored" size="sm" />
+                  <GirmBadge proofId="ABC123" />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4 text-sm">
@@ -137,7 +138,7 @@ export default function BadgeShowcasePage() {
                 <div>
                   <p className="text-gray-400">Status</p>
                   <div className="flex items-center gap-2 mt-1">
-                    <DaoBadge status="signed" size="sm" />
+                    <DaoBadge />
                   </div>
                 </div>
               </div>

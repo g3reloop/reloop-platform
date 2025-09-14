@@ -112,7 +112,7 @@ export const EscrowExample = () => {
                 value={formData.assetType}
                 onValueChange={(value: string) => setFormData({ ...formData, assetType: value as '0' | '1' | '2' })}
               >
-                <SelectTrigger id="assetType">
+                <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>

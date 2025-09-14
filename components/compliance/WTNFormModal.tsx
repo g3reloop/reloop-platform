@@ -136,7 +136,7 @@ export function WTNFormModal({ isOpen, onClose, onSubmit }: WTNFormModalProps) {
                   value={formData.wasteType}
                   onValueChange={(value) => setFormData({ ...formData, wasteType: value })}
                 >
-                  <SelectTrigger id="wasteType" className="bg-mythic-dark-700 border-mythic-primary-500/20">
+                  <SelectTrigger className="bg-mythic-dark-700 border-mythic-primary-500/20">
                     <SelectValue placeholder="Select waste type" />
                   </SelectTrigger>
                   <SelectContent>

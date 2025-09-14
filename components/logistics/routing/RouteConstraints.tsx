@@ -132,7 +132,7 @@ export function RouteConstraints({ constraints, onChange }: RouteConstraintsProp
               value={constraints.adrClass || 'none'}
               onValueChange={(value) => handleChange('adrClass', value === 'none' ? undefined : value)}
             >
-              <SelectTrigger id="adrClass">
+              <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -159,7 +159,7 @@ export function RouteConstraints({ constraints, onChange }: RouteConstraintsProp
               value={constraints.vehicleType || 'standard'}
               onValueChange={(value) => handleChange('vehicleType', value)}
             >
-              <SelectTrigger id="vehicleType">
+              <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>

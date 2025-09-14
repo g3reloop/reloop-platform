@@ -19,7 +19,10 @@ export async function GET(request: NextRequest) {
     const agents = await Promise.all(
       AGENT_REGISTRY.map(async (name) => {
         // Mock status - in production, fetch from agent heartbeat table
-        const status: 'healthy' | 'degraded' | 'offline' = Math.random() > 0.9 ? 'degraded' : 'healthy'
+        const random = Math.random()
+        const status: 'healthy' | 'degraded' | 'offline' = 
+          random > 0.95 ? 'offline' : 
+          random > 0.9 ? 'degraded' : 'healthy'
         const queueDepth = Math.floor(Math.random() * 50)
         const avgLatency = Math.floor(Math.random() * 1000) + 100
         const processed = Math.floor(Math.random() * 5000)

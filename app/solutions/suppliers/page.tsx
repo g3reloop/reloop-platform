@@ -161,12 +161,12 @@ export default function SuppliersPage() {
         <p className="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
           Join thousands of businesses already benefiting from the circular economy
         </p>
-        <Button size="lg" asChild>
-          <Link href="/register">
+        <Link href="/register">
+          <Button size="lg">
             Get Started
             <ArrowRight className="ml-2 h-5 w-5" />
-          </Link>
-        </Button>
+          </Button>
+        </Link>
       </div>
     </div>
   )

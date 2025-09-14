@@ -28,7 +28,7 @@ export function CarrierDirectory() {
   }
 
   const handleContactCarrier = () => {
-    toast.info('Join our network to connect with verified carriers')
+    toast('Join our network to connect with verified carriers')
     router.push('/join')
   }
 

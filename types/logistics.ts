@@ -37,6 +37,7 @@ export interface RouteStop {
   serviceDuration?: number // minutes
   demand?: number // quantity to pick up/deliver in kg
   volume?: number // for marketplace integration
+  notes?: string
 }
 
 export interface RouteConstraints {
@@ -47,6 +48,9 @@ export interface RouteConstraints {
   temperatureControl?: boolean
   tunnelRestrictions?: string[]
   avoidAreas?: Array<{ lat: number; lng: number; radius: number }>
+  avoidTolls?: boolean
+  avoidHighways?: boolean
+  vehicleType?: string
 }
 
 export interface RouteResult {

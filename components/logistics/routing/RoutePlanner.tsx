@@ -176,15 +176,15 @@ export function RoutePlanner() {
               value={materialType}
               onValueChange={(value) => setMaterialType(value as MaterialType)}
             >
-              <SelectTrigger id="materialType">
+              <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value={MaterialType.FOOD_WASTE}>Food Waste</SelectItem>
-                <SelectItem value={MaterialType.COOKING_OIL}>Cooking Oil</SelectItem>
-                <SelectItem value={MaterialType.GREASE_TRAP}>Grease Trap Waste</SelectItem>
-                <SelectItem value={MaterialType.MIXED_ORGANIC}>Mixed Organic</SelectItem>
-                <SelectItem value={MaterialType.COMPOSTABLE}>Compostable Materials</SelectItem>
+                <SelectItem value={MaterialType.UCO}>Used Cooking Oil</SelectItem>
+                <SelectItem value={MaterialType.BULK_LIQUID}>Bulk Liquid</SelectItem>
+                <SelectItem value={MaterialType.AGRICULTURAL}>Agricultural</SelectItem>
+                <SelectItem value={MaterialType.RECYCLABLES}>Recyclables</SelectItem>
               </SelectContent>
             </Select>
           </div>

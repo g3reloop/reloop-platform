@@ -88,20 +88,20 @@ export function Header() {
             )}
             {navigation.map((item) => {
               // Check if user has access to this route
-              const hasAccess = item.dropdown 
-                ? item.dropdown.some(subItem => canAccessRoute(subItem.href))
+              const hasAccess = (item as any).dropdown 
+                ? (item as any).dropdown.some((subItem: any) => canAccessRoute(subItem.href))
                 : canAccessRoute(item.href)
               
               if (!hasAccess && user) return null
               
               return (
               <div key={item.name} className="relative">
-                {item.dropdown ? (
+                {(item as any).dropdown ? (
                   <button
                     onClick={() => setActiveDropdown(activeDropdown === item.name ? null : item.name)}
                     className={cn(
                       "px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 flex items-center gap-1",
-                      pathname.startsWith(item.dropdown[0].href)
+                      pathname.startsWith((item as any).dropdown[0].href)
                         ? "text-mythic-primary-500"
                         : "text-mythic-text-muted hover:text-mythic-text-primary hover:bg-mythic-primary-500/10"
                     )}
@@ -124,9 +124,9 @@ export function Header() {
                 )}
 
                 {/* Dropdown Menu */}
-                {item.dropdown && activeDropdown === item.name && (
+                {(item as any).dropdown && activeDropdown === item.name && (
                   <div className="absolute top-full left-0 mt-2 w-56 rounded-xl bg-mythic-dark-900 border border-mythic-primary-500/20 shadow-xl overflow-hidden glass">
-                    {item.dropdown.map((subItem) => (
+                    {(item as any).dropdown.map((subItem: any) => (
                       <Link
                         key={subItem.name}
                         href={subItem.href}
@@ -274,7 +274,7 @@ export function Header() {
             {navigation.map((item) => (
               <div key={item.name}>
                 <Link
-                  href={item.dropdown ? item.dropdown[0].href : item.href}
+                  href={(item as any).dropdown ? (item as any).dropdown[0].href : item.href}
                   className={cn(
                     "block px-4 py-3 text-base font-medium rounded-lg transition-colors",
                     pathname === item.href
@@ -285,9 +285,9 @@ export function Header() {
                 >
                   {item.name}
                 </Link>
-                {item.dropdown && (
+                {(item as any).dropdown && (
                   <div className="ml-4 space-y-1 mt-1">
-                    {item.dropdown.map((subItem) => (
+                    {(item as any).dropdown.map((subItem: any) => (
                       <Link
                         key={subItem.name}
                         href={subItem.href}
@@ -374,7 +374,7 @@ export function Header() {
             
             {/* Wallet Connect for Mobile */}
             <div className="pt-2">
-              <WalletConnect className="w-full" />
+              <WalletConnect />
             </div>
           </div>
         </div>

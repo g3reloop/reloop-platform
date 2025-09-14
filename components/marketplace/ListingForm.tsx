@@ -96,7 +96,7 @@ export function ListingForm() {
               value={formData.type}
               onValueChange={(value) => setFormData({ ...formData, type: value })}
             >
-              <SelectTrigger id="type" className="bg-mythic-dark-700 border-mythic-primary-500/20">
+              <SelectTrigger className="bg-mythic-dark-700 border-mythic-primary-500/20">
                 <SelectValue placeholder="Select type" />
               </SelectTrigger>
               <SelectContent>
@@ -113,7 +113,7 @@ export function ListingForm() {
               value={formData.category}
               onValueChange={(value) => setFormData({ ...formData, category: value })}
             >
-              <SelectTrigger id="category" className="bg-mythic-dark-700 border-mythic-primary-500/20">
+              <SelectTrigger className="bg-mythic-dark-700 border-mythic-primary-500/20">
                 <SelectValue placeholder="Select category" />
               </SelectTrigger>
               <SelectContent>
@@ -155,7 +155,7 @@ export function ListingForm() {
               value={formData.unit}
               onValueChange={(value) => setFormData({ ...formData, unit: value })}
             >
-              <SelectTrigger id="unit" className="bg-mythic-dark-700 border-mythic-primary-500/20">
+              <SelectTrigger className="bg-mythic-dark-700 border-mythic-primary-500/20">
                 <SelectValue placeholder="Select unit" />
               </SelectTrigger>
               <SelectContent>
@@ -191,7 +191,7 @@ export function ListingForm() {
               value={formData.priceUnit}
               onValueChange={(value) => setFormData({ ...formData, priceUnit: value })}
             >
-              <SelectTrigger id="priceUnit" className="bg-mythic-dark-700 border-mythic-primary-500/20">
+              <SelectTrigger className="bg-mythic-dark-700 border-mythic-primary-500/20">
                 <SelectValue placeholder="Select unit" />
               </SelectTrigger>
               <SelectContent>
@@ -211,7 +211,7 @@ export function ListingForm() {
             value={formData.frequency}
             onValueChange={(value) => setFormData({ ...formData, frequency: value })}
           >
-            <SelectTrigger id="frequency" className="bg-mythic-dark-700 border-mythic-primary-500/20">
+            <SelectTrigger className="bg-mythic-dark-700 border-mythic-primary-500/20">
               <SelectValue placeholder="Select frequency" />
             </SelectTrigger>
             <SelectContent>
@@ -335,7 +335,7 @@ export function ListingForm() {
             value={formData.contactMethod}
             onValueChange={(value) => setFormData({ ...formData, contactMethod: value })}
           >
-            <SelectTrigger id="contactMethod" className="bg-mythic-dark-700 border-mythic-primary-500/20">
+            <SelectTrigger className="bg-mythic-dark-700 border-mythic-primary-500/20">
               <SelectValue placeholder="Select contact method" />
             </SelectTrigger>
             <SelectContent>
