@@ -11,11 +11,23 @@ export default function MobilePage() {
             Genesis Reloop Driver App
           </h1>
           <p className="text-xl text-mythic-text-muted mb-8 max-w-3xl mx-auto">
-            Coming Soon: The mobile companion app for collection drivers and field operators
+            The mobile companion app for collection drivers and field operators. 
+            Streamline collections, optimize routes, and ensure compliance on the go.
           </p>
-          <div className="flex items-center justify-center gap-2 text-mythic-primary-500">
-            <Smartphone className="h-8 w-8" />
-            <span className="text-2xl font-semibold">Available Q2 2025</span>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <a 
+              href="#download" 
+              className="inline-flex items-center gap-2 px-6 py-3 bg-mythic-primary-500 text-white rounded-lg hover:bg-mythic-primary-600 transition-all font-medium"
+            >
+              <Smartphone className="h-5 w-5" />
+              Download Now
+            </a>
+            <a 
+              href="/docs/mobile" 
+              className="inline-flex items-center gap-2 px-6 py-3 bg-mythic-dark-800 text-mythic-text-primary rounded-lg hover:bg-mythic-dark-700 transition-all font-medium border border-mythic-primary-500/20"
+            >
+              View Documentation
+            </a>
           </div>
         </div>
 
@@ -145,22 +157,41 @@ export default function MobilePage() {
           </div>
         </div>
 
-        {/* CTA Section */}
-        <div className="text-center mt-16">
-          <h2 className="text-3xl font-bold mb-4">Be the First to Know</h2>
+        {/* Download Section */}
+        <div className="text-center mt-16" id="download">
+          <h2 className="text-3xl font-bold mb-4">Download the App</h2>
           <p className="text-lg text-mythic-text-muted mb-8">
-            Join the waitlist to get early access to the Genesis Reloop Driver App
+            Available for iOS and Android devices. Start optimizing your collections today.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="flex-1 px-4 py-3 rounded-lg bg-mythic-dark-800 border border-mythic-primary-500/20 text-mythic-text-primary placeholder-mythic-text-muted focus:outline-none focus:border-mythic-primary-500"
-            />
-            <button className="px-6 py-3 rounded-lg bg-mythic-primary-500 text-black font-semibold hover:bg-mythic-primary-400 transition-colors">
-              Join Waitlist
-            </button>
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+            <a 
+              href="https://apps.apple.com" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="transform hover:scale-105 transition-transform"
+            >
+              <img 
+                src="/ios-app-store-badge.svg" 
+                alt="Download on the App Store" 
+                className="h-14"
+              />
+            </a>
+            <a 
+              href="https://play.google.com" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="transform hover:scale-105 transition-transform"
+            >
+              <img 
+                src="/google-play-badge.svg" 
+                alt="Get it on Google Play" 
+                className="h-14"
+              />
+            </a>
           </div>
+          <p className="text-sm text-mythic-text-muted mt-6">
+            Or scan the QR code with your mobile device to download directly
+          </p>
         </div>
       </div>
     </div>

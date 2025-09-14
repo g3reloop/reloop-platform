@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 import { MarketplaceListings } from '@/components/marketplace/MarketplaceListings'
-import { MythicBackground } from '@/components/MythicBackground'
+import { MythicBackground } from '@/components/ui/mythic-background'
 
 export default function MarketplaceBrowsePage() {
   return (

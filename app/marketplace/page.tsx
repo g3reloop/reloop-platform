@@ -11,8 +11,9 @@ export default function MarketplacePage() {
   const [showJoinModal, setShowJoinModal] = useState(false)
 
   const handleJoinNetwork = (type: 'producer' | 'processor') => {
-    setShowJoinModal(true)
-    toast.success(`Welcome! Let's get you started as a ${type}.`)
+    // Navigate to registration with type parameter
+    window.location.href = `/join?type=${type}`
+    toast.success(`Let's get you started as a ${type}!`)
   }
 
   return (
@@ -143,31 +144,6 @@ export default function MarketplacePage() {
           ))}
         </div>
 
-        {/* Join Modal */}
-        {showJoinModal && (
-          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="bg-mythic-dark-800 rounded-xl border border-mythic-primary-500/20 p-8 max-w-md w-full">
-              <h3 className="text-2xl font-bold text-mythic-text-primary mb-4">Join the ReLoop Network</h3>
-              <p className="text-mythic-text-muted mb-6">
-                ReLoop is currently in private beta. Join our waitlist to be among the first to transform waste into value.
-              </p>
-              <div className="space-y-3">
-                <Link
-                  href="/join"
-                  className="block w-full px-4 py-3 bg-mythic-primary-500 text-white rounded-lg hover:bg-mythic-primary-600 transition-all text-center font-medium"
-                >
-                  Join Waitlist
-                </Link>
-                <button
-                  onClick={() => setShowJoinModal(false)}
-                  className="block w-full px-4 py-3 border border-mythic-primary-500/20 text-mythic-text-muted rounded-lg hover:bg-mythic-primary-500/10 transition-all"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   )
