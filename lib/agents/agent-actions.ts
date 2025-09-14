@@ -105,22 +105,47 @@ export async function executeAgentAction(
   parameters: any,
   context: AgentContext
 ): Promise<ActionResult> {
-  switch (agentName) {
-    case 'FeedstockMatcher':
-      return executeFeedstockMatcherAction(action, parameters, context)
-    case 'TraceBot':
-      return executeTraceBotAction(action, parameters, context)
-    case 'RouteGen':
-      return executeRouteGenAction(action, parameters, context)
-    case 'CarbonVerifier':
-      return executeCarbonVerifierAction(action, parameters, context)
-    case 'SupportBot':
-      return executeSupportBotAction(action, parameters, context)
-    default:
+  try {
+    // Validate inputs
+    if (!agentName || typeof agentName !== 'string') {
       return {
         success: false,
-        message: `Action execution for ${agentName} is being implemented.`
+        message: 'Invalid agent name provided'
       }
+    }
+
+    if (!action || typeof action !== 'string') {
+      return {
+        success: false,
+        message: 'Invalid action provided'
+      }
+    }
+
+    // Execute agent-specific action
+    switch (agentName) {
+      case 'FeedstockMatcher':
+        return await executeFeedstockMatcherAction(action, parameters, context)
+      case 'TraceBot':
+        return await executeTraceBotAction(action, parameters, context)
+      case 'RouteGen':
+        return await executeRouteGenAction(action, parameters, context)
+      case 'CarbonVerifier':
+        return await executeCarbonVerifierAction(action, parameters, context)
+      case 'SupportBot':
+        return await executeSupportBotAction(action, parameters, context)
+      default:
+        return {
+          success: false,
+          message: `Agent '${agentName}' is not recognized or not yet implemented.`
+        }
+    }
+  } catch (error) {
+    console.error(`Error executing ${agentName} action:`, error)
+    return {
+      success: false,
+      message: `An error occurred while executing the ${action} action. Please try again later.`,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }
   }
 }
 
@@ -129,52 +154,78 @@ async function executeFeedstockMatcherAction(
   parameters: any,
   context: AgentContext
 ): Promise<ActionResult> {
-  switch (action) {
-    case 'find_processors':
-      const wasteType = parameters.wasteType || 'food-waste'
-      const location = parameters.location || 'UK'
+  try {
+    switch (action) {
+      case 'find_processors':
+        const wasteType = parameters?.wasteType || 'food-waste'
+        const location = parameters?.location || 'UK'
+        
+        // Validate waste type
+        const validWasteTypes = ['food-waste', 'uco', 'mixed']
+        if (!validWasteTypes.includes(wasteType)) {
+          return {
+            success: false,
+            message: `Invalid waste type '${wasteType}'. Valid types are: ${validWasteTypes.join(', ')}`
+          }
+        }
+        
+        const compatibleProcessors = marketData.processors.filter(proc => 
+          proc.accepts.includes(wasteType) && 
+          proc.location.includes(location)
+        )
+        
+        return {
+          success: true,
+          data: compatibleProcessors,
+          message: `Found ${compatibleProcessors.length} compatible processors for ${wasteType} in ${location}:`,
+          followUp: [
+            'Would you like to see detailed pricing?',
+            'Should I check their current capacity?',
+            'Do you need route optimization to these facilities?'
+          ]
+        }
       
-      const compatibleProcessors = marketData.processors.filter(proc => 
-        proc.accepts.includes(wasteType) && 
-        proc.location.includes(location)
-      )
-      
-      return {
-        success: true,
-        data: compatibleProcessors,
-        message: `Found ${compatibleProcessors.length} compatible processors for ${wasteType} in ${location}:`,
-        followUp: [
-          'Would you like to see detailed pricing?',
-          'Should I check their current capacity?',
-          'Do you need route optimization to these facilities?'
-        ]
-      }
-      
-    case 'analyze_waste_stream':
-      return {
-        success: true,
-        data: {
-          composition: {
-            organic: 85,
-            packaging: 10,
-            other: 5
+      case 'analyze_waste_stream':
+        // Validate required parameters
+        if (!parameters || typeof parameters !== 'object') {
+          return {
+            success: false,
+            message: 'Invalid parameters for waste stream analysis. Please provide waste composition data.'
+          }
+        }
+        
+        return {
+          success: true,
+          data: {
+            composition: {
+              organic: 85,
+              packaging: 10,
+              other: 5
+            },
+            quality: 'High',
+            processingOptions: ['AD', 'Composting'],
+            estimatedValue: 125
           },
-          quality: 'High',
-          processingOptions: ['AD', 'Composting'],
-          estimatedValue: 125
-        },
-        message: 'Waste stream analysis complete. Your material is suitable for anaerobic digestion with high biogas potential.',
-        followUp: [
-          'Would you like me to find matching processors?',
-          'Should I calculate potential carbon credits?'
-        ]
-      }
+          message: 'Waste stream analysis complete. Your material is suitable for anaerobic digestion with high biogas potential.',
+          followUp: [
+            'Would you like me to find matching processors?',
+            'Should I calculate potential carbon credits?'
+          ]
+        }
       
-    default:
-      return {
-        success: false,
-        message: 'Action not recognized. Try "find processors" or "analyze waste stream".'
-      }
+      default:
+        return {
+          success: false,
+          message: 'Action not recognized. Try "find processors" or "analyze waste stream".'
+        }
+    }
+  } catch (error) {
+    console.error('FeedstockMatcher action error:', error)
+    return {
+      success: false,
+      message: 'An error occurred while processing your request. Please try again.',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }
   }
 }
 
@@ -183,35 +234,52 @@ async function executeTraceBotAction(
   parameters: any,
   context: AgentContext
 ): Promise<ActionResult> {
-  switch (action) {
-    case 'track_batch':
-      const batchId = parameters.batchId || 'WTN-2024-0142'
+  try {
+    switch (action) {
+      case 'track_batch':
+        const batchId = parameters?.batchId || 'WTN-2024-0142'
+        
+        // Validate batch ID format
+        if (batchId && !batchId.match(/^WTN-\d{4}-\d{4}$/)) {
+          return {
+            success: false,
+            message: 'Invalid batch ID format. Expected format: WTN-YYYY-NNNN'
+          }
+        }
+        
+        return {
+          success: true,
+          data: {
+            batchId,
+            status: 'In Transit',
+            checkpoints: [
+              { location: 'Collection Point', time: '09:00', verified: true },
+              { location: 'Weighbridge', time: '09:45', verified: true },
+              { location: 'En Route', time: '10:15', verified: true }
+            ],
+            estimatedArrival: '11:00',
+            carbonSaved: 2.4
+          },
+          message: `Tracking batch ${batchId}: Currently in transit, 3/5 checkpoints verified.`,
+          followUp: [
+            'Would you like to see the GPS route?',
+            'Should I notify you upon delivery?'
+          ]
+        }
       
-      return {
-        success: true,
-        data: {
-          batchId,
-          status: 'In Transit',
-          checkpoints: [
-            { location: 'Collection Point', time: '09:00', verified: true },
-            { location: 'Weighbridge', time: '09:45', verified: true },
-            { location: 'En Route', time: '10:15', verified: true }
-          ],
-          estimatedArrival: '11:00',
-          carbonSaved: 2.4
-        },
-        message: `Tracking batch ${batchId}: Currently in transit, 3/5 checkpoints verified.`,
-        followUp: [
-          'Would you like to see the GPS route?',
-          'Should I notify you upon delivery?'
-        ]
-      }
-      
-    default:
-      return {
-        success: false,
-        message: 'Please specify what you would like to track.'
-      }
+      default:
+        return {
+          success: false,
+          message: 'Please specify what you would like to track.'
+        }
+    }
+  } catch (error) {
+    console.error('TraceBot action error:', error)
+    return {
+      success: false,
+      message: 'An error occurred while tracking your batch. Please try again.',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }
   }
 }
 
@@ -220,32 +288,49 @@ async function executeRouteGenAction(
   parameters: any,
   context: AgentContext
 ): Promise<ActionResult> {
-  switch (action) {
-    case 'optimize_route':
-      const stops = parameters.stops || 5
+  try {
+    switch (action) {
+      case 'optimize_route':
+        const stops = parameters?.stops || 5
+        
+        // Validate stops parameter
+        if (stops < 1 || stops > 50) {
+          return {
+            success: false,
+            message: 'Invalid number of stops. Please provide a number between 1 and 50.'
+          }
+        }
+        
+        return {
+          success: true,
+          data: {
+            totalDistance: 67.8,
+            estimatedTime: 4.5,
+            fuelSaved: 12.3,
+            co2Reduced: 18.7,
+            optimizedStops: stops
+          },
+          message: `Route optimized! New route reduces distance by 23% and saves ${12.3}L of fuel.`,
+          followUp: [
+            'Would you like to see the detailed route?',
+            'Should I send this to the driver app?',
+            'Do you want to calculate the cost savings?'
+          ]
+        }
       
-      return {
-        success: true,
-        data: {
-          totalDistance: 67.8,
-          estimatedTime: 4.5,
-          fuelSaved: 12.3,
-          co2Reduced: 18.7,
-          optimizedStops: stops
-        },
-        message: `Route optimized! New route reduces distance by 23% and saves ${12.3}L of fuel.`,
-        followUp: [
-          'Would you like to see the detailed route?',
-          'Should I send this to the driver app?',
-          'Do you want to calculate the cost savings?'
-        ]
-      }
-      
-    default:
-      return {
-        success: false,
-        message: 'Please specify the route optimization parameters.'
-      }
+      default:
+        return {
+          success: false,
+          message: 'Please specify the route optimization parameters.'
+        }
+    }
+  } catch (error) {
+    console.error('RouteGen action error:', error)
+    return {
+      success: false,
+      message: 'An error occurred while optimizing your route. Please try again.',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }
   }
 }
 
@@ -254,36 +339,62 @@ async function executeCarbonVerifierAction(
   parameters: any,
   context: AgentContext
 ): Promise<ActionResult> {
-  switch (action) {
-    case 'calculate_emissions_avoided':
-      const tonnage = parameters.tonnage || 10
-      const wasteType = parameters.wasteType || 'food-waste'
+  try {
+    switch (action) {
+      case 'calculate_emissions_avoided':
+        const tonnage = parameters?.tonnage || 10
+        const wasteType = parameters?.wasteType || 'food-waste'
+        
+        // Validate tonnage
+        if (tonnage < 0 || tonnage > 10000) {
+          return {
+            success: false,
+            message: 'Invalid tonnage. Please provide a value between 0 and 10,000 tonnes.'
+          }
+        }
+        
+        // Validate waste type
+        const validWasteTypes = ['food-waste', 'uco', 'mixed']
+        if (!validWasteTypes.includes(wasteType)) {
+          return {
+            success: false,
+            message: `Invalid waste type '${wasteType}'. Valid types are: ${validWasteTypes.join(', ')}`
+          }
+        }
+        
+        const emissionFactor = wasteType === 'food-waste' ? 2.1 : 2.8
+        const creditsGenerated = tonnage * emissionFactor
+        
+        return {
+          success: true,
+          data: {
+            tonnage,
+            wasteType,
+            emissionsAvoided: tonnage * emissionFactor,
+            creditsGenerated,
+            value: creditsGenerated * 32.50
+          },
+          message: `Verified: ${tonnage} tonnes of ${wasteType} diverted, generating ${creditsGenerated.toFixed(1)} GIRM credits worth £${(creditsGenerated * 32.50).toFixed(2)}.`,
+          followUp: [
+            'Would you like to mint these credits on-chain?',
+            'Should I generate the verification certificate?',
+            'Do you want to see the market price trends?'
+          ]
+        }
       
-      const emissionFactor = wasteType === 'food-waste' ? 2.1 : 2.8
-      const creditsGenerated = tonnage * emissionFactor
-      
-      return {
-        success: true,
-        data: {
-          tonnage,
-          wasteType,
-          emissionsAvoided: tonnage * emissionFactor,
-          creditsGenerated,
-          value: creditsGenerated * 32.50
-        },
-        message: `Verified: ${tonnage} tonnes of ${wasteType} diverted, generating ${creditsGenerated.toFixed(1)} GIRM credits worth £${(creditsGenerated * 32.50).toFixed(2)}.`,
-        followUp: [
-          'Would you like to mint these credits on-chain?',
-          'Should I generate the verification certificate?',
-          'Do you want to see the market price trends?'
-        ]
-      }
-      
-    default:
-      return {
-        success: false,
-        message: 'Please specify the tonnage and waste type for verification.'
-      }
+      default:
+        return {
+          success: false,
+          message: 'Please specify the tonnage and waste type for verification.'
+        }
+    }
+  } catch (error) {
+    console.error('CarbonVerifier action error:', error)
+    return {
+      success: false,
+      message: 'An error occurred while calculating carbon credits. Please try again.',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }
   }
 }
 

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { TourGuide } from '@/components/onboarding/tour-guide'
+import { ServiceWorkerRegistration, PWAUpdateHandler } from '@/components/pwa/ServiceWorkerRegistration'
 import { usePathname } from 'next/navigation'
 
 export function ClientWrapper({ children }: { children: React.ReactNode }) {
@@ -30,6 +31,8 @@ export function ClientWrapper({ children }: { children: React.ReactNode }) {
     <>
       {children}
       <TourGuide startTour={showTour} onComplete={() => setShowTour(false)} />
+      <ServiceWorkerRegistration />
+      <PWAUpdateHandler />
     </>
   )
 }

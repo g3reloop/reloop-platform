@@ -5,6 +5,7 @@ import {
   updateConversationHistory,
   agentCapabilities 
 } from '@/lib/agents/agent-system'
+import { parseOpenRouterResponse, validateJsonStructure } from '@/lib/utils/safeJsonParse'
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY
 const OPENROUTER_BASE_URL = process.env.OPENROUTER_BASE_URL || 'https://openrouter.ai/api/v1'
@@ -244,7 +245,38 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const data = await response.json()
+    // Use safe JSON parsing with fallback
+    const parseResult = await parseOpenRouterResponse(response, {
+      choices: [{ message: { content: 'I apologize, but I encountered an error processing your request.' } }]
+    })
+
+    if (!parseResult.success) {
+      console.error('Failed to parse OpenRouter response:', parseResult.error)
+      return NextResponse.json(
+        { 
+          error: 'Failed to parse AI response. Please try again later.',
+          details: parseResult.error 
+        },
+        { status: 500 }
+      )
+    }
+
+    // Validate the response structure
+    const isValidResponse = validateJsonStructure(
+      parseResult.data,
+      ['choices'],
+      'OpenRouter response'
+    )
+
+    if (!isValidResponse) {
+      console.error('Invalid OpenRouter response structure:', parseResult.data)
+      return NextResponse.json(
+        { error: 'Invalid response format from AI service.' },
+        { status: 500 }
+      )
+    }
+
+    const data = parseResult.data
     const aiResponse = data.choices[0]?.message?.content || 'I apologize, but I encountered an error processing your request.'
 
     return NextResponse.json({
