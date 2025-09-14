@@ -22,7 +22,8 @@ import {
   User,
   BarChart3,
   LayoutDashboard,
-  Shield
+  Shield,
+  Truck
 } from 'lucide-react'
 
 const navigation = [
@@ -162,6 +163,12 @@ export function Header() {
                 <Link href="/agents" className="flex items-center gap-1 px-3 py-2 text-mythic-text-muted hover:text-mythic-primary-500 transition-colors rounded-lg hover:bg-mythic-primary-500/10">
                   <Activity className="h-4 w-4" />
                   <span className="text-sm font-medium">Agents</span>
+                </Link>
+              )}
+              {user && canAccessRoute('/logistics') && (
+                <Link href="/logistics" className="flex items-center gap-1 px-3 py-2 text-mythic-text-muted hover:text-mythic-primary-500 transition-colors rounded-lg hover:bg-mythic-primary-500/10">
+                  <Truck className="h-4 w-4" />
+                  <span className="text-sm font-medium">Logistics</span>
                 </Link>
               )}
               {user && user.role === 'admin' && (
@@ -329,6 +336,16 @@ export function Header() {
                 >
                   <Activity className="h-4 w-4" />
                   Agents
+                </Link>
+              )}
+              {user && canAccessRoute('/logistics') && (
+                <Link 
+                  href="/logistics" 
+                  className="px-4 py-2 rounded-lg bg-mythic-dark-800 text-mythic-text-muted hover:bg-mythic-primary-500/10 hover:text-mythic-text-primary transition-all flex items-center gap-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Truck className="h-4 w-4" />
+                  Logistics
                 </Link>
               )}
               {user && user.role === 'admin' && (
