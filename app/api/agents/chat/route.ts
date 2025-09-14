@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY
 const OPENROUTER_BASE_URL = process.env.OPENROUTER_BASE_URL || 'https://openrouter.ai/api/v1'
+const IS_DEMO_MODE = !OPENROUTER_API_KEY
 
 // Agent personalities and system prompts
 const agentPersonalities: Record<string, string> = {
@@ -48,6 +49,45 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Demo mode responses for when API key is not configured
+    if (IS_DEMO_MODE) {
+      const demoResponses = {
+        FeedstockMatcher: [
+          "I've analyzed your waste stream profile. Based on your location and waste type, I've identified 3 compatible processing facilities within a 25-mile radius. The Brighton Community AD facility has capacity for your food waste volumes and offers competitive gate fees.",
+          "Your UCO quality metrics match perfectly with the Bristol Biodiesel Co-op requirements. They're currently seeking suppliers with your volume range and can offer premium pricing for ISCC-certified material.",
+          "I can connect you with verified buyers for your organic waste streams. Would you like me to show you real-time pricing and availability?"
+        ],
+        TraceBot: [
+          "I'm tracking batch #WTN-2024-0142 from collection at Marks & Spencer Brighton through processing at Brighton Community AD. The material has been verified at each checkpoint with photographic evidence and GPS coordinates.",
+          "Your waste material journey: Collected → Transported (12.3 miles) → Received at AD facility → Processing begun → Biogas produced → Grid injection verified. Full chain of custody maintained.",
+          "All material flows are recorded on our immutable ledger. You can verify the complete journey of your waste from source to final product."
+        ],
+        RouteGen: [
+          "I've optimized today's collection route to reduce mileage by 23% while maintaining all time windows. The new route saves 45 minutes and reduces carbon emissions by 18kg CO2e.",
+          "Based on current traffic patterns and facility operating hours, I recommend adjusting tomorrow's route to avoid the A23 congestion and utilize the Brighton bypass.",
+          "Multi-stop optimization complete: 8 collections, 127 miles total, estimated 6.5 hours including processing time at facilities."
+        ],
+        ComplianceClerk: [
+          "All required documentation for today's collections has been auto-generated. WTN forms are complete with digital signatures and photographic evidence. Fully compliant with UK waste regulations.",
+          "I've verified that your waste carrier license is valid until December 2024. All collection vehicles have current insurance and ADR certification for UCO transport.",
+          "Compliance check complete: ✓ Waste carrier license ✓ Environmental permits ✓ Duty of care documentation ✓ Hazardous waste consignment notes"
+        ]
+      }
+
+      const responses = demoResponses[agentName as keyof typeof demoResponses] || [
+        "I'm here to help optimize your circular economy operations. What specific aspect of waste management can I assist you with today?"
+      ]
+      
+      const aiResponse = responses[Math.floor(Math.random() * responses.length)]
+      
+      return NextResponse.json({
+        response: aiResponse,
+        agentName,
+        timestamp: new Date().toISOString(),
+        demoMode: true
+      })
+    }
+
     // Prepare messages for OpenRouter
     const openRouterMessages = [
       { role: 'system', content: systemPrompt },
@@ -77,8 +117,17 @@ export async function POST(request: NextRequest) {
     if (!response.ok) {
       const error = await response.text()
       console.error('OpenRouter API error:', error)
+      
+      // Provide helpful error message
+      if (response.status === 401) {
+        return NextResponse.json(
+          { error: 'API authentication failed. Please check your OpenRouter API key.' },
+          { status: 500 }
+        )
+      }
+      
       return NextResponse.json(
-        { error: 'Failed to get response from AI' },
+        { error: 'Failed to get response from AI. Please try again later.' },
         { status: 500 }
       )
     }

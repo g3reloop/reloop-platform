@@ -54,10 +54,10 @@ const highlights = [
 ]
 
 const proofs = [
-  { metric: '850K kg', label: 'Waste Diverted', trend: '+25% MoM' },
-  { metric: '15,234', label: 'GIRM Credits', trend: '+18% MoM' },
-  { metric: '2,456', label: 'Community Nodes', trend: '+12% MoM' },
-  { metric: '£487k', label: 'DAO Treasury', trend: '+42% MoM' }
+  { metric: '12', label: 'Active Loops', trend: 'Brighton, Bristol, Manchester' },
+  { metric: '147', label: 'Verified Partners', trend: 'Restaurants, Hotels, Processors' },
+  { metric: '£1.85/L', label: 'Biodiesel Price', trend: 'vs £2.30 pump diesel' },
+  { metric: '24/7', label: 'Chain of Custody', trend: 'Full transparency' }
 ]
 
 export default function HomePage() {
@@ -258,9 +258,9 @@ export default function HomePage() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl font-bold mb-4 text-mythic-text-primary">Real Loops. Real Numbers.</h2>
+            <h2 className="text-4xl font-bold mb-4 text-mythic-text-primary">The Network is Live</h2>
             <p className="text-xl text-mythic-text-muted max-w-3xl mx-auto">
-              No greenwashing. Every metric is measured and verified.
+              Join verified suppliers, processors, and buyers already transforming waste into value.
             </p>
           </motion.div>
 
@@ -276,8 +276,7 @@ export default function HomePage() {
               >
                 <div className="text-3xl font-bold text-mythic-primary-500 mb-2">{proof.metric}</div>
                 <div className="text-sm text-mythic-text-muted mb-2">{proof.label}</div>
-                <div className="inline-flex items-center gap-1 text-xs text-mythic-accent-300">
-                  <TrendingUp className="h-3 w-3" />
+                <div className="text-xs text-mythic-accent-300">
                   {proof.trend}
                 </div>
               </motion.div>
@@ -290,13 +289,22 @@ export default function HomePage() {
             viewport={{ once: true }}
             className="mt-12 text-center"
           >
-            <Link
-              href="/girm"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-mythic-primary-500 to-mythic-accent-300 text-mythic-dark-900 font-semibold rounded-lg hover:shadow-lg hover:shadow-mythic-primary-500/25 transition-all duration-200"
-            >
-              View Live Credits
-              <ArrowRight className="h-5 w-5" />
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link
+                href="/marketplace/browse"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-mythic-primary-500 to-mythic-accent-300 text-mythic-dark-900 font-semibold rounded-lg hover:shadow-lg hover:shadow-mythic-primary-500/25 transition-all duration-200"
+              >
+                Browse Live Listings
+                <ArrowRight className="h-5 w-5" />
+              </Link>
+              <Link
+                href="/join"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-mythic-dark-900/80 backdrop-blur text-mythic-text-primary font-semibold rounded-lg border border-mythic-primary-500/20 hover:bg-mythic-dark-800/80 transition-all duration-200"
+              >
+                Join the Network
+                <Users className="h-5 w-5" />
+              </Link>
+            </div>
           </motion.div>
         </div>
       </section>

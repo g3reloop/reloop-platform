@@ -28,9 +28,25 @@ export default function MarketplacePage() {
           <p className="text-xl text-mythic-text-muted max-w-3xl mx-auto mb-4">
             {marketplaceContent.hero.subtitle}
           </p>
-          <p className="text-lg text-mythic-text-muted max-w-2xl mx-auto">
+          <p className="text-lg text-mythic-text-muted max-w-2xl mx-auto mb-8">
             {marketplaceContent.hero.description}
           </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              href="/marketplace/browse"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-mythic-primary-500 text-white rounded-lg hover:bg-mythic-primary-600 transition-all font-medium"
+            >
+              <FiPackage className="h-5 w-5" />
+              Browse All Listings
+            </Link>
+            <Link
+              href="/marketplace/create"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-mythic-dark-800 text-mythic-text-primary rounded-lg hover:bg-mythic-dark-700 transition-all font-medium border border-mythic-primary-500/20"
+            >
+              <FiPlus className="h-5 w-5" />
+              Create Listing
+            </Link>
+          </div>
         </div>
 
         {/* Stats Section */}
