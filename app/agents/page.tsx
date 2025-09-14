@@ -141,28 +141,64 @@ export default function AgentsPage() {
       timestamp: new Date()
     }
 
+    const currentMessages = chatMessages[selectedAgent] || []
+    const updatedMessages = [...currentMessages, userMessage]
+
     setChatMessages(prev => ({
       ...prev,
-      [selectedAgent]: [...(prev[selectedAgent] || []), userMessage]
+      [selectedAgent]: updatedMessages
     }))
 
     setInputMessage('')
     setIsTyping(true)
 
-    // Simulate agent response
-    setTimeout(() => {
+    try {
+      // Call the real AI API
+      const response = await fetch('/api/agents/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          agentName: selectedAgent,
+          messages: updatedMessages.map(msg => ({
+            role: msg.role,
+            content: msg.content
+          }))
+        })
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to get response')
+      }
+
+      const data = await response.json()
+      
       const agentResponse: ChatMessage = {
         role: 'agent',
-        content: `I understand you're asking about "${inputMessage}". Let me process that request for you...`,
+        content: data.response,
         timestamp: new Date()
       }
 
       setChatMessages(prev => ({
         ...prev,
-        [selectedAgent]: [...(prev[selectedAgent] || []), agentResponse]
+        [selectedAgent]: [...updatedMessages, agentResponse]
       }))
+    } catch (error) {
+      console.error('Chat error:', error)
+      const errorResponse: ChatMessage = {
+        role: 'agent',
+        content: 'I apologize, but I encountered an error. Please try again.',
+        timestamp: new Date()
+      }
+
+      setChatMessages(prev => ({
+        ...prev,
+        [selectedAgent]: [...updatedMessages, errorResponse]
+      }))
+    } finally {
       setIsTyping(false)
-    }, 1500)
+    }
   }
 
   const selectedAgentInfo = agents.find(a => a.name === selectedAgent)

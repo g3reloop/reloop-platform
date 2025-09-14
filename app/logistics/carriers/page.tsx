@@ -1,4 +1,4 @@
-import { CarrierDirectory } from '@/components/logistics/carriers/CarrierDirectory'
+import { CarrierDirectory } from '@/components/logistics/CarrierDirectory'
 import { ProtectedLogisticsRoute } from '@/components/logistics/ProtectedLogisticsRoute'
 import {
   PageHeader,
