@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
     const agents = await Promise.all(
       AGENT_REGISTRY.map(async (name) => {
         // Mock status - in production, fetch from agent heartbeat table
-        const status = Math.random() > 0.9 ? 'degraded' : 'healthy'
+        const status: 'healthy' | 'degraded' | 'offline' = Math.random() > 0.9 ? 'degraded' : 'healthy'
         const queueDepth = Math.floor(Math.random() * 50)
         const avgLatency = Math.floor(Math.random() * 1000) + 100
         const processed = Math.floor(Math.random() * 5000)
@@ -40,12 +40,12 @@ export async function GET(request: NextRequest) {
       })
     )
 
-    const overallHealth = agents.every(a => a.status === 'healthy') ? 'healthy' :
+    const overallHealth: 'healthy' | 'degraded' | 'offline' = agents.every(a => a.status === 'healthy') ? 'healthy' :
       agents.some(a => a.status === 'offline') ? 'offline' : 'degraded'
 
     const response: AgentStatusResponse = {
       agents,
-      overallHealth: overallHealth as any
+      overallHealth
     }
 
     return NextResponse.json(response)
