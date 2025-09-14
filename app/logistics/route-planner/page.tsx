@@ -9,7 +9,8 @@ import {
 export default function RoutePlannerPage() {
   return (
     <ProtectedLogisticsRoute requiredPermission="createRoutes">
-      <div className="container py-10">
+      <div className="min-h-screen bg-black">
+        <div className="container py-10">
         <PageHeader>
           <PageHeaderHeading>Route Planner</PageHeaderHeading>
           <PageHeaderDescription>
@@ -19,6 +20,7 @@ export default function RoutePlannerPage() {
         
         <div className="mt-8">
           <RoutePlanner />
+        </div>
         </div>
       </div>
     </ProtectedLogisticsRoute>

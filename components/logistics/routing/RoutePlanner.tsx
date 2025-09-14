@@ -164,10 +164,10 @@ export function RoutePlanner() {
   return (
     <div className="space-y-6">
       {/* Material Type Selection */}
-      <Card>
+      <Card className="bg-mythic-dark-800 border-mythic-primary-500/20">
         <CardHeader>
-          <CardTitle>Route Configuration</CardTitle>
-          <CardDescription>Set up your route parameters</CardDescription>
+          <CardTitle className="text-mythic-text-primary">Route Configuration</CardTitle>
+          <CardDescription className="text-mythic-text-muted">Set up your route parameters</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
@@ -192,14 +192,17 @@ export function RoutePlanner() {
       </Card>
 
       {/* Stops Management */}
-      <Card>
+      <Card className="bg-mythic-dark-800 border-mythic-primary-500/20">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>Route Stops</CardTitle>
-              <CardDescription>Add and arrange your collection/delivery points</CardDescription>
+              <CardTitle className="text-mythic-text-primary">Route Stops</CardTitle>
+              <CardDescription className="text-mythic-text-muted">Add and arrange your collection/delivery points</CardDescription>
             </div>
-            <Button onClick={() => setShowAddStop(!showAddStop)}>
+            <Button 
+              onClick={() => setShowAddStop(!showAddStop)}
+              className="bg-mythic-primary-500 hover:bg-mythic-primary-600 text-white"
+            >
               <Plus className="h-4 w-4 mr-2" />
               Add Stop
             </Button>
@@ -207,8 +210,8 @@ export function RoutePlanner() {
         </CardHeader>
         <CardContent>
           {showAddStop && (
-            <div className="mb-6 p-4 border rounded-lg bg-muted/50">
-              <h4 className="font-medium mb-4">Add New Stop</h4>
+            <div className="mb-6 p-4 border border-mythic-primary-500/20 rounded-lg bg-mythic-dark-700">
+              <h4 className="font-medium mb-4 text-mythic-text-primary">Add New Stop</h4>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="stopName">Location Name</Label>
@@ -252,14 +255,25 @@ export function RoutePlanner() {
                 </div>
               </div>
               <div className="flex gap-2 mt-4">
-                <Button onClick={handleAddStop}>Add Stop</Button>
-                <Button variant="outline" onClick={() => setShowAddStop(false)}>Cancel</Button>
+                <Button 
+                  onClick={handleAddStop}
+                  className="bg-mythic-primary-500 hover:bg-mythic-primary-600 text-white"
+                >
+                  Add Stop
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={() => setShowAddStop(false)}
+                  className="border-mythic-primary-500/20 text-mythic-text-muted hover:text-mythic-text-primary"
+                >
+                  Cancel
+                </Button>
               </div>
             </div>
           )}
 
           {stops.length === 0 ? (
-            <div className="text-center py-12 text-muted-foreground">
+            <div className="text-center py-12 text-mythic-text-muted">
               <MapPin className="h-12 w-12 mx-auto mb-4 opacity-50" />
               <p>No stops added yet. Click "Add Stop" to get started.</p>
             </div>
@@ -291,6 +305,7 @@ export function RoutePlanner() {
           size="lg"
           onClick={handleOptimizeRoute}
           disabled={stops.length < 2 || isOptimizing}
+          className="bg-mythic-primary-500 hover:bg-mythic-primary-600 text-white"
         >
           {isOptimizing ? (
             <>

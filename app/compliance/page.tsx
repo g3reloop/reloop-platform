@@ -9,6 +9,7 @@ import {
   ArrowRight, Download, Eye
 } from 'lucide-react'
 import Link from 'next/link'
+import { WTNFormModal } from '@/components/compliance/WTNFormModal'
 
 interface WasteTransferNote {
   id: string
@@ -89,6 +90,14 @@ export default function CompliancePage() {
   const [activeTab, setActiveTab] = useState<'wtn' | 'batches' | 'evidence' | 'zk'>('wtn')
   const [filterType, setFilterType] = useState<'all' | 'food-waste' | 'uco'>('all')
   const [searchTerm, setSearchTerm] = useState('')
+  const [isWTNModalOpen, setIsWTNModalOpen] = useState(false)
+
+  const handleWTNSubmit = (data: any) => {
+    // Handle WTN submission
+    console.log('WTN Form Data:', data)
+    // Here you would typically send the data to your backend
+    // For now, we'll just log it
+  }
 
   const filteredWTNs = mockWTNs.filter(wtn => {
     if (filterType !== 'all' && wtn.wasteType !== filterType) return false
@@ -254,7 +263,10 @@ export default function CompliancePage() {
                       />
                     </div>
                   </div>
-                  <button className="px-4 py-2 bg-gradient-to-r from-mythic-primary-500 to-mythic-accent-300 text-mythic-dark-900 font-semibold rounded-lg hover:shadow-lg hover:shadow-mythic-primary-500/25 transition-all">
+                  <button 
+                    onClick={() => setIsWTNModalOpen(true)}
+                    className="px-4 py-2 bg-gradient-to-r from-mythic-primary-500 to-mythic-accent-300 text-mythic-dark-900 font-semibold rounded-lg hover:shadow-lg hover:shadow-mythic-primary-500/25 transition-all"
+                  >
                     <Upload className="h-4 w-4 inline mr-2" />
                     New WTN
                   </button>
@@ -521,6 +533,13 @@ export default function CompliancePage() {
           )}
         </motion.div>
       </div>
+
+      {/* WTN Form Modal */}
+      <WTNFormModal
+        isOpen={isWTNModalOpen}
+        onClose={() => setIsWTNModalOpen(false)}
+        onSubmit={handleWTNSubmit}
+      />
     </div>
   )
 }
