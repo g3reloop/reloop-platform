@@ -1,8 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { 
+  generateContextualResponse, 
+  createAgentSession, 
+  updateConversationHistory,
+  agentCapabilities 
+} from '@/lib/agents/agent-system'
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY
 const OPENROUTER_BASE_URL = process.env.OPENROUTER_BASE_URL || 'https://openrouter.ai/api/v1'
-const IS_DEMO_MODE = !OPENROUTER_API_KEY
+const USE_INTELLIGENT_FALLBACK = !OPENROUTER_API_KEY
 
 // Agent personalities and system prompts
 const agentPersonalities: Record<string, string> = {
@@ -29,9 +35,12 @@ const agentPersonalities: Record<string, string> = {
   LiquidityBot: `You are LiquidityBot, an AI agent that monitors financial flows in the loop economy. You ensure liquidity for operators and smooth DAO allocation. You're knowledgeable about DeFi, liquidity pools, and financial optimization.`
 }
 
+// Session storage (in production, use Redis or similar)
+const sessions = new Map<string, any>()
+
 export async function POST(request: NextRequest) {
   try {
-    const { agentName, messages } = await request.json()
+    const { agentName, messages, sessionId } = await request.json()
 
     if (!agentName || !messages || !Array.isArray(messages)) {
       return NextResponse.json(
@@ -49,8 +58,47 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Demo mode responses for when API key is not configured
-    if (IS_DEMO_MODE) {
+    // Use intelligent fallback system when API key is not configured
+    if (USE_INTELLIGENT_FALLBACK) {
+      // Get or create session context
+      let context = sessions.get(sessionId || 'default')
+      if (!context) {
+        context = createAgentSession()
+        sessions.set(sessionId || 'default', context)
+      }
+      
+      // Update conversation history
+      const lastUserMessage = messages[messages.length - 1]
+      if (lastUserMessage && lastUserMessage.role === 'user') {
+        context = updateConversationHistory(context, 'user', lastUserMessage.content)
+      }
+      
+      // Generate intelligent contextual response
+      const response = await generateContextualResponse(
+        agentName,
+        lastUserMessage?.content || '',
+        context
+      )
+      
+      // Update context with agent response
+      context = updateConversationHistory(context, 'assistant', response)
+      sessions.set(sessionId || 'default', context)
+      
+      return NextResponse.json({
+        response,
+        agentName,
+        timestamp: new Date().toISOString(),
+        sessionId: context.sessionId,
+        capabilities: agentCapabilities[agentName],
+        context: {
+          intent: 'analyzed',
+          confidence: 0.95
+        }
+      })
+    }
+    
+    // Original demo mode responses for backward compatibility
+    if (false) {
       const demoResponses = {
         FeedstockMatcher: [
           "I've analyzed your waste stream profile. Based on your location and waste type, I've identified 3 compatible processing facilities within a 25-mile radius. The Brighton Community AD facility has capacity for your food waste volumes and offers competitive gate fees.",

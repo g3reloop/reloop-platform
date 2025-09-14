@@ -10,6 +10,7 @@ import {
 } from 'lucide-react'
 import { MythicBackground } from '@/components/ui/mythic-background'
 import { cn } from '@/lib/utils/cn'
+import ReactMarkdown from 'react-markdown'
 
 interface AgentInfo {
   name: string
@@ -112,6 +113,8 @@ export default function AgentsPage() {
   const [isTyping, setIsTyping] = useState(false)
   const [filter, setFilter] = useState<'all' | 'matching' | 'compliance' | 'finance' | 'reputation'>('all')
   const [drawerState, setDrawerState] = useState<'closed' | 'minimized' | 'open' | 'fullscreen'>('open')
+  const [sessionId, setSessionId] = useState<string | null>(null)
+  const [agentCapabilities, setAgentCapabilities] = useState<any>(null)
 
   const filteredAgents = filter === 'all' 
     ? agents 
@@ -164,7 +167,8 @@ export default function AgentsPage() {
           messages: updatedMessages.map(msg => ({
             role: msg.role,
             content: msg.content
-          }))
+          })),
+          sessionId: sessionId
         })
       })
 
@@ -174,6 +178,16 @@ export default function AgentsPage() {
         // If there's an error in the response, use the error message
         const errorMessage = data.error || 'Failed to get response'
         throw new Error(errorMessage)
+      }
+      
+      // Store session ID if provided
+      if (data.sessionId && !sessionId) {
+        setSessionId(data.sessionId)
+      }
+      
+      // Store agent capabilities
+      if (data.capabilities) {
+        setAgentCapabilities(data.capabilities)
       }
       
       const agentResponse: ChatMessage = {
@@ -353,7 +367,9 @@ export default function AgentsPage() {
                       <h3 className="font-semibold text-mythic-text-primary">
                         {selectedAgent}
                       </h3>
-                      <p className="text-xs text-mythic-text-muted">Online</p>
+                      <p className="text-xs text-mythic-text-muted">
+                        {agentCapabilities ? 'Online • AI Enhanced' : 'Online'}
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -390,6 +406,24 @@ export default function AgentsPage() {
                 </div>
               </div>
 
+              {/* Agent Capabilities Info (shown at start) */}
+              {agentCapabilities && chatMessages[selectedAgent]?.length === 1 && (
+                <div className="p-4 mx-6 mt-4 bg-mythic-primary-500/10 rounded-xl border border-mythic-primary-500/20">
+                  <h4 className="text-sm font-semibold text-mythic-text-primary mb-2">I can help you with:</h4>
+                  <div className="grid grid-cols-1 gap-2">
+                    {agentCapabilities.actions?.slice(0, 3).map((action: string, idx: number) => (
+                      <div key={idx} className="flex items-center gap-2 text-sm text-mythic-text-muted">
+                        <div className="w-1.5 h-1.5 bg-mythic-primary-500 rounded-full" />
+                        <span>{action.replace(/_/g, ' ')}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-xs text-mythic-text-muted mt-2">
+                    Type "help" to see all capabilities
+                  </p>
+                </div>
+              )}
+
               {/* Chat Messages */}
               <div className="flex-1 overflow-y-auto p-6 space-y-4">
                 {chatMessages[selectedAgent]?.map((message, index) => (
@@ -408,8 +442,24 @@ export default function AgentsPage() {
                         ? "bg-mythic-primary-500/20 text-mythic-text-primary"
                         : "bg-mythic-dark-800 text-mythic-text-muted"
                     )}>
-                      <p className="text-sm">{message.content}</p>
-                      <p className="text-xs opacity-50 mt-1">
+                      {message.role === 'agent' ? (
+                        <ReactMarkdown 
+                          className="text-sm prose prose-invert prose-sm max-w-none"
+                          components={{
+                            p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+                            ul: ({ children }) => <ul className="list-disc list-inside mb-2 space-y-1">{children}</ul>,
+                            li: ({ children }) => <li className="text-sm">{children}</li>,
+                            strong: ({ children }) => <strong className="font-semibold text-mythic-primary-500">{children}</strong>,
+                            em: ({ children }) => <em className="text-mythic-accent-300">{children}</em>,
+                            code: ({ children }) => <code className="bg-mythic-dark-700 px-1 py-0.5 rounded text-xs">{children}</code>
+                          }}
+                        >
+                          {message.content}
+                        </ReactMarkdown>
+                      ) : (
+                        <p className="text-sm">{message.content}</p>
+                      )}
+                      <p className="text-xs opacity-50 mt-2">
                         {message.timestamp.toLocaleTimeString()}
                       </p>
                     </div>
