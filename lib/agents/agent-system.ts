@@ -1,5 +1,7 @@
 // Agent System Configuration and Intelligence Layer
 
+import { getAgentRelevantFeatures, searchFeatures, SiteFeature } from './site-context'
+
 export interface AgentCapability {
   name: string
   description: string
@@ -27,6 +29,7 @@ export interface AgentContext {
     totalVolume: number
     carbonCredits: number
   }
+  siteFeatures?: SiteFeature[]
 }
 
 export const agentCapabilities: Record<string, AgentCapability> = {
@@ -282,6 +285,31 @@ export const agentCapabilities: Record<string, AgentCapability> = {
       'banking_apis',
       'settlement_system'
     ]
+  },
+  
+  SupportBot: {
+    name: 'SupportBot',
+    description: 'Your friendly ReLoop platform assistant for navigation and support',
+    actions: [
+      'navigate_to_page',
+      'explain_feature',
+      'troubleshoot_issue',
+      'guide_onboarding',
+      'find_relevant_agent',
+      'search_documentation'
+    ],
+    dataAccess: [
+      'site_structure',
+      'feature_documentation',
+      'common_issues',
+      'agent_capabilities',
+      'user_guides'
+    ],
+    integrations: [
+      'navigation_system',
+      'documentation_api',
+      'agent_registry'
+    ]
   }
 }
 
@@ -296,6 +324,11 @@ export async function generateContextualResponse(
   const capability = agentCapabilities[agentName]
   if (!capability) {
     return "I'm not sure which agent you're trying to reach. Please try again."
+  }
+  
+  // Add site context for the agent
+  if (!context.siteFeatures) {
+    context.siteFeatures = getAgentRelevantFeatures(agentName)
   }
 
   // Parse action from message

@@ -443,19 +443,20 @@ export default function AgentsPage() {
                         : "bg-mythic-dark-800 text-mythic-text-muted"
                     )}>
                       {message.role === 'agent' ? (
-                        <ReactMarkdown 
-                          className="text-sm prose prose-invert prose-sm max-w-none"
-                          components={{
-                            p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
-                            ul: ({ children }) => <ul className="list-disc list-inside mb-2 space-y-1">{children}</ul>,
-                            li: ({ children }) => <li className="text-sm">{children}</li>,
-                            strong: ({ children }) => <strong className="font-semibold text-mythic-primary-500">{children}</strong>,
-                            em: ({ children }) => <em className="text-mythic-accent-300">{children}</em>,
-                            code: ({ children }) => <code className="bg-mythic-dark-700 px-1 py-0.5 rounded text-xs">{children}</code>
-                          }}
-                        >
-                          {message.content}
-                        </ReactMarkdown>
+                        <div className="text-sm prose prose-invert prose-sm max-w-none">
+                          <ReactMarkdown 
+                            components={{
+                              p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+                              ul: ({ children }) => <ul className="list-disc list-inside mb-2 space-y-1">{children}</ul>,
+                              li: ({ children }) => <li className="text-sm">{children}</li>,
+                              strong: ({ children }) => <strong className="font-semibold text-mythic-primary-500">{children}</strong>,
+                              em: ({ children }) => <em className="text-mythic-accent-300">{children}</em>,
+                              code: ({ children }) => <code className="bg-mythic-dark-700 px-1 py-0.5 rounded text-xs">{children}</code>
+                            }}
+                          >
+                            {message.content}
+                          </ReactMarkdown>
+                        </div>
                       ) : (
                         <p className="text-sm">{message.content}</p>
                       )}

@@ -1,6 +1,8 @@
 // Agent Actions Handler - Executes actual agent capabilities
 
 import { AgentContext } from './agent-system'
+import { searchFeatures, getAllFeaturesBySection } from './site-context'
+import { searchFAQs, getFAQsByCategory, getRelatedFAQs } from '../data/faqs'
 
 export interface ActionResult {
   success: boolean
@@ -25,7 +27,7 @@ export interface MarketData {
     capacity: number
     accepts: string[]
     certifications: string[]
-    gateF        ee: number
+    gateFee: number
     location: string
   }>
   buyers: Array<{
@@ -112,6 +114,8 @@ export async function executeAgentAction(
       return executeRouteGenAction(action, parameters, context)
     case 'CarbonVerifier':
       return executeCarbonVerifierAction(action, parameters, context)
+    case 'SupportBot':
+      return executeSupportBotAction(action, parameters, context)
     default:
       return {
         success: false,
@@ -338,5 +342,201 @@ export function parseActionFromMessage(message: string): { action: string; param
   return {
     action: 'general',
     parameters: {}
+  }
+}
+
+async function executeSupportBotAction(
+  action: string,
+  parameters: any,
+  context: AgentContext
+): Promise<ActionResult> {
+  switch (action) {
+    case 'navigate_to_page':
+      const query = parameters.query || ''
+      const features = searchFeatures(query)
+      
+      if (features.length > 0) {
+        let message = `I found these relevant pages for "${query}":\n\n`
+        features.slice(0, 3).forEach(feature => {
+          message += `**[${feature.name}](${feature.path})**\n`
+          message += `${feature.description}\n\n`
+        })
+        
+        return {
+          success: true,
+          data: features,
+          message,
+          followUp: [
+            'Would you like me to explain how to use any of these features?',
+            'Do you need help with something specific?'
+          ]
+        }
+      } else {
+        return {
+          success: false,
+          message: `I couldn't find pages matching "${query}". Try browsing our main sections:\n\n• [Dashboard](/dashboard)\n• [Marketplace](/marketplace)\n• [Collection](/collection)\n• [Logistics](/logistics)\n• [Carbon Credits](/carbon)`,
+          followUp: [
+            'What are you trying to accomplish?',
+            'Would you like to see all available features?'
+          ]
+        }
+      }
+      
+    case 'explain_feature':
+      const featureName = parameters.feature || ''
+      const feature = searchFeatures(featureName)[0]
+      
+      if (feature) {
+        return {
+          success: true,
+          data: feature,
+          message: `**${feature.name}**\n\n${feature.description}\n\nYou can access it here: [${feature.path}](${feature.path})\n\nThis feature is useful for ${feature.userTypes.join(', ')} users.`,
+          followUp: [
+            'Would you like me to guide you through using this feature?',
+            'Do you have any specific questions about it?'
+          ]
+        }
+      } else {
+        return {
+          success: false,
+          message: 'Could you please specify which feature you\'d like to know about?'
+        }
+      }
+      
+    case 'troubleshoot_issue':
+      const issue = parameters.issue || ''
+      
+      let troubleshootMessage = 'I can help you troubleshoot. '
+      
+      if (issue.includes('login') || issue.includes('sign')) {
+        troubleshootMessage += 'For login issues:\n\n• Make sure you\'re using the correct email\n• Check if caps lock is on\n• Try resetting your password\n• Clear your browser cache\n\nYou can [login here](/login) or [register a new account](/register).'
+      } else if (issue.includes('payment') || issue.includes('transaction')) {
+        troubleshootMessage += 'For payment issues:\n\n• Check your wallet connection\n• Ensure sufficient balance\n• Try refreshing the page\n• Contact support if the issue persists\n\nVisit the [Treasury](/treasury) or [Dashboard](/dashboard) to check your balance.'
+      } else {
+        troubleshootMessage += 'Please describe your issue in more detail. Common areas I can help with:\n\n• Login and account access\n• Marketplace transactions\n• Waste tracking\n• Carbon credit calculations\n• DAO voting'
+      }
+      
+      return {
+        success: true,
+        message: troubleshootMessage,
+        followUp: [
+          'Is this helping resolve your issue?',
+          'Would you like to contact support directly?'
+        ]
+      }
+      
+    case 'guide_onboarding':
+      return {
+        success: true,
+        message: `Welcome to ReLoop! Let me guide you through getting started:\n\n1. **[Join the Platform](/join)** - Choose your role (supplier, processor, collector, or investor)\n2. **[Complete Your Profile](/dashboard)** - Add your business details and certifications\n3. **[Take the Tutorial](/tutorial)** - Learn the platform basics (10 minutes)\n4. **[Browse the Marketplace](/marketplace)** - See available materials and processors\n5. **[Connect with AI Agents](/agents)** - Get specialized help for your needs\n\nWhich step would you like to start with?`,
+        followUp: [
+          'Should I walk you through the registration process?',
+          'Would you like to know which role is best for you?',
+          'Do you have specific questions about the platform?'
+        ]
+      }
+      
+    case 'search_documentation':
+      const docQuery = parameters.query || action || ''
+      
+      // Search FAQs first
+      const faqs = searchFAQs(docQuery)
+      
+      if (faqs.length > 0) {
+        let message = `I found these FAQs that might help:\n\n`
+        faqs.slice(0, 3).forEach(faq => {
+          message += `**${faq.question}**\n${faq.answer}\n\n`
+        })
+        
+        return {
+          success: true,
+          data: faqs,
+          message,
+          followUp: [
+            'Would you like to see more FAQs?',
+            'Do you need clarification on any of these answers?',
+            'Should I help you with something specific?'
+          ]
+        }
+      } else {
+        return {
+          success: false,
+          message: `I couldn't find FAQs about "${docQuery}". Try rephrasing your question or visit our [FAQ section](/#faq) to browse all questions.`,
+          followUp: [
+            'Would you like to browse FAQs by category?',
+            'Can I help you find a specific feature?'
+          ]
+        }
+      }
+      
+    case 'find_relevant_agent':
+      const need = parameters.need || ''
+      let agentRecommendation = ''
+      
+      if (need.includes('match') || need.includes('processor')) {
+        agentRecommendation = 'I recommend talking to **FeedstockMatcher** - they specialize in connecting waste suppliers with processors. [Chat with FeedstockMatcher](/agents)'
+      } else if (need.includes('track') || need.includes('trace')) {
+        agentRecommendation = 'You should speak with **TraceBot** - they handle all material tracking and chain of custody. [Chat with TraceBot](/agents)'
+      } else if (need.includes('route') || need.includes('optimize')) {
+        agentRecommendation = '**RouteGen** is perfect for route optimization and logistics planning. [Chat with RouteGen](/agents)'
+      } else if (need.includes('carbon') || need.includes('credit')) {
+        agentRecommendation = '**CarbonVerifier** can help with carbon credit calculations and verification. [Chat with CarbonVerifier](/agents)'
+      } else {
+        agentRecommendation = 'Here are our specialized agents:\n\n• **FeedstockMatcher** - Waste-to-processor matching\n• **TraceBot** - Material tracking\n• **RouteGen** - Route optimization\n• **CarbonVerifier** - Carbon credits\n• **ComplianceGuard** - Regulatory compliance\n\n[Visit the AI Agents page](/agents) to chat with any of them.'
+      }
+      
+      return {
+        success: true,
+        message: agentRecommendation,
+        followUp: [
+          'Would you like me to explain what this agent can do?',
+          'Do you have other tasks I can help with?'
+        ]
+      }
+      
+    default:
+      // For general queries, search both FAQs and features
+      const searchQuery = parameters.query || action
+      const relevantFAQs = searchFAQs(searchQuery).slice(0, 2)
+      const relevantFeatures = searchFeatures(searchQuery).slice(0, 2)
+      
+      if (relevantFAQs.length > 0 || relevantFeatures.length > 0) {
+        let message = ''
+        
+        // Add FAQ results
+        if (relevantFAQs.length > 0) {
+          message += 'Here are relevant answers from our FAQ:\n\n'
+          relevantFAQs.forEach(faq => {
+            message += `**${faq.question}**\n${faq.answer}\n\n`
+          })
+        }
+        
+        // Add feature results
+        if (relevantFeatures.length > 0) {
+          message += 'These platform features might also help:\n\n'
+          relevantFeatures.forEach(feature => {
+            message += `• **[${feature.name}](${feature.path})** - ${feature.description}\n`
+          })
+        }
+        
+        return {
+          success: true,
+          data: { faqs: relevantFAQs, features: relevantFeatures },
+          message,
+          followUp: [
+            'Would you like more information about any of these?',
+            'Can I help you with something else?'
+          ]
+        }
+      } else {
+        return {
+          success: true,
+          message: 'I\'m here to help! You can ask me about:\n\n• Finding specific features or pages\n• Getting started on the platform\n• Troubleshooting issues\n• Understanding how things work\n• Connecting with the right AI agent\n\nWhat would you like help with?',
+          followUp: [
+            'Would you like to see all available features?',
+            'Should I guide you through getting started?'
+          ]
+        }
+      }
   }
 }

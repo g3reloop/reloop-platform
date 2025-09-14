@@ -20,6 +20,7 @@ import {
 } from 'lucide-react'
 import { AnimatedParticles } from '@/components/animated-particles'
 import { GenesisLogoWatermark } from '@/components/ui/genesis-logo'
+import { FAQSection } from '@/components/home/FAQSection'
 import { cn } from '@/lib/utils/cn'
 
 const highlights = [
@@ -361,6 +362,9 @@ export default function HomePage() {
           </motion.div>
         </div>
       </section>
+
+      {/* FAQ Section */}
+      <FAQSection className="bg-gradient-to-b from-transparent via-mythic-dark-900/30 to-transparent" />
 
       {/* CTA Section */}
       <section className="py-24 relative overflow-hidden">

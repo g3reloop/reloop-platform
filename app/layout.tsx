@@ -8,6 +8,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { MythicBackgroundAnimated } from "@/components/ui/mythic-background";
 import { Toaster } from "sonner";
 import { ClientWrapper } from "@/components/layout/client-wrapper";
+import { SupportWidget } from "@/components/support-widget";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -121,6 +122,7 @@ export default function RootLayout({
                 </main>
                 <Footer />
                 <Toaster richColors position="top-right" theme="dark" />
+                <SupportWidget />
               </ClientWrapper>
             </div>
           </Web3Provider>
