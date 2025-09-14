@@ -168,15 +168,17 @@ export default function AgentsPage() {
         })
       })
 
-      if (!response.ok) {
-        throw new Error('Failed to get response')
-      }
-
       const data = await response.json()
+      
+      if (!response.ok) {
+        // If there's an error in the response, use the error message
+        const errorMessage = data.error || 'Failed to get response'
+        throw new Error(errorMessage)
+      }
       
       const agentResponse: ChatMessage = {
         role: 'agent',
-        content: data.response,
+        content: data.response || 'I encountered an issue processing your request.',
         timestamp: new Date()
       }
 
@@ -186,9 +188,10 @@ export default function AgentsPage() {
       }))
     } catch (error) {
       console.error('Chat error:', error)
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
       const errorResponse: ChatMessage = {
         role: 'agent',
-        content: 'I apologize, but I encountered an error. Please try again.',
+        content: `I apologize, but I encountered an error: ${errorMessage}. Please try again or check the console for details.`,
         timestamp: new Date()
       }
 
