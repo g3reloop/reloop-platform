@@ -3,6 +3,7 @@ import React from 'react'
 import GenesisThemeProvider from '../components/theme/GenesisThemeProvider'
 import { QuintupleLayer } from '../components/theme/QuintupleLayer'
 import Navigation from '../components/layout/navigation'
+import { Providers } from '../components/providers/providers'
 
 export const metadata = { 
   title: 'Genesis Reloop', 
@@ -14,12 +15,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className="dark">
       <body>
         <GenesisThemeProvider>
-          <QuintupleLayer>
-            <Navigation />
-            <main className="min-h-screen relative z-10">
-              {children}
-            </main>
-          </QuintupleLayer>
+          <Providers>
+            <QuintupleLayer>
+              <Navigation />
+              <main className="min-h-screen relative z-10">
+                {children}
+              </main>
+            </QuintupleLayer>
+          </Providers>
         </GenesisThemeProvider>
       </body>
     </html>

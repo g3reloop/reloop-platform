@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Menu, X, Home, Package, Bot, BarChart3, LogIn, LogOut, User, Settings } from 'lucide-react'
+import { Menu, X, Home, Package, Bot, BarChart3, LogIn, LogOut, User, Settings, Truck, MapPin } from 'lucide-react'
 import { Button } from '@/src/components/ui/button'
 import { cn } from '@/lib/cn'
 
@@ -11,6 +11,8 @@ const navItems = [
   { href: '/marketplace', label: 'Marketplace', icon: Package },
   { href: '/agents', label: 'AI Agents', icon: Bot },
   { href: '/analytics', label: 'Analytics', icon: BarChart3 },
+  { href: '/logistics/carriers', label: 'Carriers', icon: Truck },
+  { href: '/logistics/route-planner', label: 'Route Planner', icon: MapPin },
 ]
 
 export function Navigation() {

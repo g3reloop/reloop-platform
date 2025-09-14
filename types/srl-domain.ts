@@ -5,18 +5,20 @@
 export type SRLActor = 'Entrustor' | 'Custodian' | 'Broker' | 'Offtaker' | 'LogisticsProvider'
 
 // Process States for Chain of Custody
-export enum ProcessState {
-  ENTRUSTED = 'entrusted',
-  TRANSPORT_PICKUP = 'transport_pickup', 
-  RECEIVED_AT_FACILITY = 'received_at_facility',
-  QA_VERIFIED = 'qa_verified',
-  SORTED = 'sorted',
-  PROCESSING_START = 'processing_start',
-  DIGESTED = 'digested',
-  PROCESSED = 'processed',
-  DISPOSED = 'disposed',
-  OUTPUT_GENERATED = 'output_generated'
-}
+export const ProcessState = {
+  ENTRUSTED: 'entrusted',
+  TRANSPORT_PICKUP: 'transport_pickup', 
+  RECEIVED_AT_FACILITY: 'received_at_facility',
+  QA_VERIFIED: 'qa_verified',
+  SORTED: 'sorted',
+  PROCESSING_START: 'processing_start',
+  DIGESTED: 'digested',
+  PROCESSED: 'processed',
+  DISPOSED: 'disposed',
+  OUTPUT_GENERATED: 'output_generated'
+} as const
+
+export type ProcessState = typeof ProcessState[keyof typeof ProcessState]
 
 // Chain of Custody Log Entry
 export interface CoCLogEntry {
@@ -99,12 +101,14 @@ export interface NuisanceEvent {
 }
 
 // Breach Types
-export enum BreachType {
-  SPILL_CONTAMINATION = 'spill_contamination',
-  BROKEN_CHAIN_OF_CUSTODY = 'broken_chain_of_custody',
-  MATERIAL_MISREPRESENTATION = 'material_misrepresentation',
-  NUISANCE_VIOLATION = 'nuisance_violation'
-}
+export const BreachType = {
+  SPILL_CONTAMINATION: 'spill_contamination',
+  BROKEN_CHAIN_OF_CUSTODY: 'broken_chain_of_custody',
+  MATERIAL_MISREPRESENTATION: 'material_misrepresentation',
+  NUISANCE_VIOLATION: 'nuisance_violation'
+} as const
+
+export type BreachType = typeof BreachType[keyof typeof BreachType]
 
 // Remedy Process
 export interface RemedyCase {
