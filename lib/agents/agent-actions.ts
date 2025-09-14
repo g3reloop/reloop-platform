@@ -9,6 +9,7 @@ export interface ActionResult {
   data?: any
   message: string
   followUp?: string[]
+  error?: string
 }
 
 export interface MarketData {

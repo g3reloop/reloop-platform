@@ -218,7 +218,10 @@ export function useBackgroundSync() {
 
     try {
       const registration = await navigator.serviceWorker.ready
-      await registration.sync.register(tag)
+      // Use a different approach for background sync
+      if ('sync' in registration) {
+        await (registration as any).sync.register(tag)
+      }
       
       // Store data for the sync event
       if (data) {

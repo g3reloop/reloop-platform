@@ -1,9 +1,6 @@
-// Re-export Web3Service from web3-service.ts
-export { Web3Service } from './web3-service'
-export type { Web3Config } from './web3-service'
+// Web3Service is defined in this file
 
 import { ethers, id } from 'ethers'
-import { Web3Service } from './web3-service'
 import EscrowVaultABI from './abis/EscrowVault.json'
 import AMMPoolABI from './abis/AMMPool.json'
 import InsurancePolicyABI from './abis/InsurancePolicy.json'

@@ -146,6 +146,40 @@ export class BuyerDiscoveryBot extends BaseAgent {
           historicalPrices: [25, 28, 23], // £/tonne
           active: true
         }
+      ],
+      FW: [
+        {
+          id: 'buyer-fw-001',
+          name: 'Brighton Composting Facility',
+          type: 'processing',
+          location: { lat: 50.8274, lng: -0.1524 },
+          requirements: {
+            minQuantity: 1000,
+            maxQuantity: 5000,
+            qualitySpecs: ['organic only', 'no contamination'],
+            deliveryFrequency: 'weekly',
+            preferredSuppliers: ['local']
+          },
+          historicalPrices: [15, 18, 16], // £/tonne
+          active: true
+        }
+      ],
+      UCO: [
+        {
+          id: 'buyer-uco-001',
+          name: 'Brighton Biodiesel Plant',
+          type: 'processing',
+          location: { lat: 50.8274, lng: -0.1524 },
+          requirements: {
+            minQuantity: 500,
+            maxQuantity: 2000,
+            qualitySpecs: ['FFA <2%', 'water <0.5%'],
+            deliveryFrequency: 'weekly',
+            preferredSuppliers: ['local']
+          },
+          historicalPrices: [0.45, 0.48, 0.42], // £/L
+          active: true
+        }
       ]
     }
 

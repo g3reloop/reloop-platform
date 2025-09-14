@@ -1,5 +1,5 @@
 import { BaseAgent } from './base-agent'
-import { AgentJob, TraceBatch, LoopState } from '@/types/agents'
+import { AgentJob, TraceBatch, LoopState, ProductType } from '@/types/agents'
 import { createHash } from 'crypto'
 
 interface TraceEvent {
@@ -174,16 +174,20 @@ export class TraceBot extends BaseAgent {
     }
   }
 
-  private inferProductType(data: any): string {
+  private inferProductType(data: any): ProductType {
     // Infer from context
-    if (data.feedstockType) return data.feedstockType
-    if (data.productType) return data.productType
+    if (data.feedstockType && this.isValidProductType(data.feedstockType)) return data.feedstockType as ProductType
+    if (data.productType && this.isValidProductType(data.productType)) return data.productType as ProductType
     
     // Default based on processor type
     if (data.processorType === 'biogas') return 'FW'
     if (data.processorType === 'biodiesel') return 'UCO'
     
     return 'FW' // Default
+  }
+
+  private isValidProductType(type: string): type is ProductType {
+    return ['FW', 'UCO', 'BIOGAS', 'BIODIESEL', 'GLYCEROL', 'DIGESTATE'].includes(type)
   }
 
   private generateHash(batch: TraceBatch): string {
